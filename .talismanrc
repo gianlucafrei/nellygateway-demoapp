@@ -35,3 +35,5 @@ fileignoreconfig:
   checksum: 4a2b9a43d6b95376d84fcb01a8f71c014ee6ce50f869d642936d76c414b63ef9
 - filename: backend/Conduit.postman_collection.json
   checksum: 5ad2eb2ba96813046b316ce619c68ae0a390d85243001fb62f4e417ed7a4f82b
+- filename: nelly-config-azure.yaml
+  checksum: cdedebc0eb72a024576c15bd07d4f2ad450c06fa1b1fa7780d2bbdab0b9d1b65
