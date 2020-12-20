@@ -3,3 +3,35 @@ fileignoreconfig:
   checksum: 64edb8f0cdb46f011172be967cff37bf6d475420dabd5b9dd125a6f19a76f472
 - filename: frontend/yarn.lock
   checksum: 8ddfd5b79984151648fb48ba7ea50a733b5e9d411a987b2d3f08a958b1a01e46
+- filename: backend/src/main/resources/db/migration/V1__create_tables.sql
+  checksum: 5b7faf713646f4441c9adab56b5c376ef89a7780fdcd075b51151404f0ae759e
+- filename: frontend/package-lock.json
+  checksum: 64edb8f0cdb46f011172be967cff37bf6d475420dabd5b9dd125a6f19a76f472
+- filename: frontend/src/environments/environment.prod.ts
+  checksum: 5244aad53a3f2c2a594a33eb9ec6588a07990ea43c1ef13dbe7da27a3a0eb7ed
+- filename: frontend/src/environments/environment.ts
+  checksum: 42edab7ca1e0ee4c984dc61d2c5c3d947022a0cd8793bc17366fcde85b476d86
+- filename: frontend/yarn.lock
+  checksum: 8ddfd5b79984151648fb48ba7ea50a733b5e9d411a987b2d3f08a958b1a01e46
+- filename: backend/src/test/java/io/spring/infrastructure/service/DefaultJwtServiceTest.java
+  checksum: 113fe98a478ab42ae3e8f0a8aa4af74780771b10f07918027f78a66e350e9e90
+- filename: backend/.github/workflows/gradle.yml
+  checksum: d4a65b3287858d1422e9e2790b6758e4edc54c349cfa355ef327ea86ef83fddb
+- filename: backend/src/main/java/io/spring/infrastructure/service/JwtKeyResolver.java
+  checksum: a7631417437608bdee12bd4b4224a021f8cd0a953e28460ecb17a62082cd3744
+- filename: frontend/src/app/shared/list-errors.component.ts
+  checksum: f778d6cbdf14adc6fefdffff0d17860c74781c0216cba14e79f738ffa25616a7
+- filename: backend/src/main/java/io/spring/infrastructure/service/NellyJwtService.java
+  checksum: 6eec7d221b15d665790695caa435bb32d91fc71e11857015cdda69c9acc1603e
+- filename: backend/src/main/resources/application.properties
+  checksum: 56238bd01323e05f47fa435e44b1c394dfaa9ba588ee7c959a2f00f593ae79ee
+- filename: frontend/src/app/editor/editor.component.html
+  checksum: b759d81840c4520d15812763435c2a7618216b20c2f5c4c65877daa79c8ebfe2
+- filename: frontend/src/app/core/models/errors.model.ts
+  checksum: 8d82587a06e48a80587e12f0b18f09df1cbe7629c1fbe37497c87bd2eee296a2
+- filename: backend/src/main/java/io/spring/api/security/JwtTokenFilter.java
+  checksum: f7ef1b362eec6c85cab9a70c7d18b2063fa65bf5d2c0dd039b5f105cb71f5bf8
+- filename: frontend/src/app/core/services/articles.service.ts
+  checksum: 4a2b9a43d6b95376d84fcb01a8f71c014ee6ce50f869d642936d76c414b63ef9
+- filename: backend/Conduit.postman_collection.json
+  checksum: 5ad2eb2ba96813046b316ce619c68ae0a390d85243001fb62f4e417ed7a4f82b
