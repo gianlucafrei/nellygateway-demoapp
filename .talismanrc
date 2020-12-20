@@ -1,0 +1,5 @@
+fileignoreconfig:
+- filename: frontend/package-lock.json
+  checksum: 64edb8f0cdb46f011172be967cff37bf6d475420dabd5b9dd125a6f19a76f472
+- filename: frontend/yarn.lock
+  checksum: 8ddfd5b79984151648fb48ba7ea50a733b5e9d411a987b2d3f08a958b1a01e46
