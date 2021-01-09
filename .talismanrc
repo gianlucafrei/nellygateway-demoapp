@@ -37,3 +37,8 @@ fileignoreconfig:
   checksum: 5ad2eb2ba96813046b316ce619c68ae0a390d85243001fb62f4e417ed7a4f82b
 - filename: nelly-config-azure.yaml
   checksum: cdedebc0eb72a024576c15bd07d4f2ad450c06fa1b1fa7780d2bbdab0b9d1b65
+fileignoreconfig:
+- filename: frontend/src/environments/environment.prod.ts
+  checksum: 5fdfb3b57952fb287aec6cec582a32f3d0ea2e66d33b40478799b9765a37d982
+- filename: frontend/src/environments/environment.ts
+  checksum: 762506e13ef7dead958edc967a75654417c12157cbc01afbacba3db9ef0c2934
