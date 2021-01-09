@@ -44,3 +44,36 @@ font-size: 17px;
     border-radius: 50%;
     margin: 40px auto;
 }
+
+.home-page .banner {
+    background: #658e9a;
+}
+
+.navbar-brand {
+    color: #658e9a!important;
+}
+
+a {
+    color: #658e9a;
+    text-decoration: none;
+}
+
+a:focus, a:hover {
+    color: #658e9a;
+}
+
+.nav-pills.outline-active .nav-link.active {
+    border-bottom: 2px solid #658e9a!important;
+    color: #658e9a!important;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #658e9a;
+    border-color: #658e9a;
+}
+
+.btn-outline-primary {
+    color:  #658e9a;
+    border-color:  #658e9a;
+}
