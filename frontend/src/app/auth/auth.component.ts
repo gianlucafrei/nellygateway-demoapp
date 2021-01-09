@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 import { Errors, UserService} from '../core';
 
@@ -52,7 +53,7 @@ export class AuthComponent implements OnInit {
   login(provider){
 
     console.log("login with: " + provider);
-    window.location.href = "/auth/" + provider + "/login"
+    window.location.href = `${environment.auth_url}/${provider}/login`;
   }
 
   submitForm() {

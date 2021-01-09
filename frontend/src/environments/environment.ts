@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  api_url: 'http://localhost:8080/api'
+  auth_url: 'https://nellygateway.azurewebsites.net/auth',
+  api_url: 'https://nellygateway.azurewebsites.net/api'
 };

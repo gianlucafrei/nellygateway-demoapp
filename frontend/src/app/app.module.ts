@@ -11,6 +11,8 @@ import {
 } from './shared';
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
+import { HttpRequestInterceptor } from './core/services/HttpRequestInterceptor';
 
 @NgModule({
   declarations: [AppComponent, FooterComponent, HeaderComponent],
@@ -22,7 +24,12 @@ import { CoreModule } from './core/core.module';
     AuthModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [            
+    // Http Interceptor(s) -  adds with Client Credentials
+    [
+        { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true }
+    ],
+],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
