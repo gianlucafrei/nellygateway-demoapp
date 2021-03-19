@@ -2,8 +2,9 @@ package io.spring.api.security;
 
 import io.jsonwebtoken.Claims;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.service.NellyJwtService;
+import io.spring.infrastructure.service.DefaultJwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,9 +26,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private UserRepository userRepository;
 
     @Autowired
-    private NellyJwtService jwtService;
+    private DefaultJwtService jwtService;
 
-    private String header = "X-Nelly-User-Id-Token";
+    @Value("${jwt.header}")
+    private String header;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

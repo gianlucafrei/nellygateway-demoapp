@@ -9,7 +9,6 @@ import io.spring.application.data.UserData;
 import io.spring.core.user.EncryptService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.service.NellyJwtService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,7 +37,6 @@ public class UsersApi {
     private UserQueryService userQueryService;
     private String defaultImage;
     private EncryptService encryptService;
-    private NellyJwtService jwtService;
     private JwtTokenFilter tokenFilter;
 
     @Autowired
@@ -46,13 +44,11 @@ public class UsersApi {
                     UserQueryService userQueryService,
                     EncryptService encryptService,
                     @Value("${image.default}") String defaultImage,
-                    NellyJwtService jwtService,
                     JwtTokenFilter tokenFilter) {
         this.userRepository = userRepository;
         this.userQueryService = userQueryService;
         this.encryptService = encryptService;
         this.defaultImage = defaultImage;
-        this.jwtService = jwtService;
         this.tokenFilter = tokenFilter;
     }
 

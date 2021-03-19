@@ -1,5 +1,6 @@
 package io.spring.infrastructure.service;
 
+import io.jsonwebtoken.Claims;
 import io.spring.core.service.JwtService;
 import io.spring.core.user.User;
 import org.junit.Before;
@@ -18,28 +19,46 @@ public class DefaultJwtServiceTest {
 
     @Before
     public void setUp() {
-        jwtService = new DefaultJwtService("123123", 3600);
-    }
-
-    @Test
-    public void should_generate_and_parse_token() {
-        User user = new User("email@email.com", "username", "123", "", "");
-        String token = jwtService.toToken(user);
-        assertNotNull(token);
-        Optional<String> optional = jwtService.getSubFromToken(token);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get(), user.getId());
+        jwtService = new DefaultJwtService("deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
     }
 
     @Test
     public void should_get_null_with_wrong_jwt() {
-        Optional<String> optional = jwtService.getSubFromToken("123");
-        assertFalse(optional.isPresent());
+        assertFalse(jwtService.getClaimsFromToken("123").isPresent());
     }
 
     @Test
-    public void should_get_null_with_expired_jwt() {
-        String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhaXNlbnNpeSIsImV4cCI6MTUwMjE2MTIwNH0.SJB-U60WzxLYNomqLo4G3v3LzFxJKuVrIud8D8Lz3-mgpo9pN1i7C8ikU_jQPJGm8HsC1CquGMI-rSuM7j6LDA";
-        assertFalse(jwtService.getSubFromToken(token).isPresent());
+    public void hmac_test(){
+
+        String token = "eyJraWQiOiJLZXlJRCIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJKb2huIERvZSJ9.80NhW_8MTDRsWfOHNO7fy_tlfUXL-AmCXIAUrSh1n5k";
+
+        Optional<Claims> claimsOptional = jwtService.getClaimsFromToken(token);
+
+        assertTrue(claimsOptional.isPresent());
+        assertEquals("John Doe", claimsOptional.get().getSubject());
+    }
+
+    @Test
+    public void hmac_test_expired(){
+
+        String token = "eyJraWQiOiJLZXlJRCIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJKb2huIERvZSIsImV4cCI6MH0.dECQSZGANFWuGVEo0BTWMMjQReYYo2fIOVyFVhRKCmo";
+
+        Optional<Claims> claimsOptional = jwtService.getClaimsFromToken(token);
+
+        assertFalse(claimsOptional.isPresent());
+    }
+
+    @Test
+    public void hmac_test_wrongKey(){
+
+        String token = "eyJraWQiOiJLZXlJRCIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJKb2huIERvZSJ9.80NhW_8MTDRsWfOHNO7fy_tlfUXL-AmCXIAUrSh1n5k";
+        String key = "00000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
+
+        JwtService jwtService = new DefaultJwtService(key);
+
+
+        Optional<Claims> claimsOptional = jwtService.getClaimsFromToken(token);
+
+        assertFalse(claimsOptional.isPresent());
     }
 }

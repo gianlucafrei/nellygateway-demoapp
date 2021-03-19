@@ -6,10 +6,8 @@ import io.spring.api.exception.InvalidRequestException;
 import io.spring.api.security.JwtTokenFilter;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
-import io.spring.application.data.UserError;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.service.NellyJwtService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
