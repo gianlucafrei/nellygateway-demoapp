@@ -36,18 +36,15 @@ public class UsersApi {
     private UserRepository userRepository;
     private UserQueryService userQueryService;
     private String defaultImage;
-    private EncryptService encryptService;
     private JwtTokenFilter tokenFilter;
 
     @Autowired
     public UsersApi(UserRepository userRepository,
                     UserQueryService userQueryService,
-                    EncryptService encryptService,
                     @Value("${image.default}") String defaultImage,
                     JwtTokenFilter tokenFilter) {
         this.userRepository = userRepository;
         this.userQueryService = userQueryService;
-        this.encryptService = encryptService;
         this.defaultImage = defaultImage;
         this.tokenFilter = tokenFilter;
     }
