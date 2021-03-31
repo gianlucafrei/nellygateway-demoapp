@@ -1,0 +1,70 @@
+hostUri: http://localhost:8080
+
+routes:
+  frontend:
+    type: static
+    path: /**
+    url: http://localhost:4200/
+    allowAnonymous: yes
+
+  api:
+    type: apiforspa
+    path: /api/**
+    url: http://localhost:9000/
+    allowAnonymous: yes
+
+  echo:
+    type: apiforspa
+    path: /echo/**
+    url: https://nellydemoapp.azurewebsites.net
+    allowAnonymous: yes
+
+
+loginProviders:
+  google:
+    type: oidc
+    with:
+      authEndpoint: https://accounts.google.com/o/oauth2/auth
+      tokenEndpoint: https://oauth2.googleapis.com/token
+      clientId: 372143946338-48et57uhmcumku7am3ocvva0idc7u0td.apps.googleusercontent.com
+      clientSecret: env:GOOGLE_CLIENT_SECRET
+      scopes: [ "openid", "email" ]
+
+  github:
+    type: github
+    with:
+      authEndpoint: https://github.com/login/oauth/authorize
+      tokenEndpoint: https://github.com/login/oauth/access_token
+      clientId: 163ad3b08c3829216ba1
+      clientSecret: env:GITHUB_CLIENT_SECRET
+      scopes: [ "user", "email" ]
+
+securityProfiles:
+  apiforspa:
+    csrfProtection: samesite-strict-cookie
+    userMapping:
+      type: "jwt-mapping"
+      settings:
+        headerName: "Authorization"
+        headerPrefix: "Bearer "
+        audience: "<<route-url>>"
+        issuer: "<<hostUri>>"
+        tokenLifetimeSeconds: 30
+        signatureImplementation: "hmac"
+        signatureSettings:
+          secretKey: deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+          keyId: Sample Key
+        mappings:
+          sub:            <session.provider>:<session.userId>
+          picture:        <mappings.picture>
+          email:          <mappings.email>
+          proxy:          "OWASP Application Gateway"
+          sessionId:      <session.id>
+
+traceProfile:
+  forwardIncomingTrace: false
+  maxLengthIncomingTrace: 254
+  acceptAdditionalTraceInfo: false
+  maxLengthAdditionalTraceInfo: 254
+  sendTraceResponse: true
+  type: w3cTrace
