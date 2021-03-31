@@ -13,11 +13,13 @@
         <div *ngIf="authType == 'login'">
           <button (click)="login('auth0')"  class="login-button ">Login with Username & Password (Auth0)</button>
           <button (click)="login('google')" class="login-button google">Login with Google</button>
+          <button (click)="login('github')" class="login-button github">Login with GitHub</button>
         </div>
 
         <div *ngIf="authType == 'signup'">
           <button (click)="login('auth0')"  class="login-button ">SignUp with Username & Password (Auth0)</button>
           <button (click)="login('google')" class="login-button google">SignUp with Google</button>
+          <button (click)="login('github')" class="login-button github">Login with GitHub</button>
         </div>     
         
         <div *ngIf="authType == 'register'">
