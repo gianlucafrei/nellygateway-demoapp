@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  auth_url: 'https://nellygateway.azurewebsites.net/auth',
-  api_url: 'https://nellygateway.azurewebsites.net/api'
+  auth_url: '/auth',
+  api_url: '/api'
 };
