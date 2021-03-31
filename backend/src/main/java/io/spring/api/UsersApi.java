@@ -63,6 +63,8 @@ public class UsersApi {
         String picture = claims.get("picture", String.class);
         String issuer = claims.getIssuer();
 
+        if(picture == null || "".equals(picture))
+            picture = defaultImage;
 
         checkInput(registerParam, bindingResult, email, id);
 
@@ -71,7 +73,7 @@ public class UsersApi {
                 email,
                 registerParam.getUsername(),
             "",
-                picture != null ? picture : defaultImage,
+                picture,
                 issuer);
         userRepository.save(user);
 
@@ -86,10 +88,6 @@ public class UsersApi {
 
         if (userRepository.findById(id).isPresent()){
             bindingResult.rejectValue("username", "DUPLICATED", "already registered");
-        }
-
-        if (userRepository.findByEmail(email).isPresent()){
-            bindingResult.rejectValue("username", "DUPLICATED", "already registered with another provider");
         }
 
         if (userRepository.findByUsername(registerParam.getUsername()).isPresent()) {

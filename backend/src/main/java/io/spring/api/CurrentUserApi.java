@@ -58,12 +58,19 @@ public class CurrentUserApi {
         if(currentUser == null) {
 
             String email = claimsOptional.get().get("email", String.class);
-            String picture = claimsOptional.get().get("picture", String.class);
+            String pictureFromClaims = claimsOptional.get().get("picture", String.class);
+
+            final String picture;
+
+            if(pictureFromClaims == null || "".equals(pictureFromClaims))
+                picture = defaultImage;
+            else
+                picture = pictureFromClaims;
 
             return ResponseEntity.ok(new HashMap<String, Object>() {{
                 put("email", email);
                 put("needsRegistration", true);
-                put("picture", picture != null ? picture : defaultImage);
+                put("picture", picture);
             }});
         }
 
@@ -79,7 +86,7 @@ public class CurrentUserApi {
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
         }
-        checkUniquenessOfUsernameAndEmail(currentUser, updateUserParam, bindingResult);
+        checkUniquenessOfUsername(currentUser, updateUserParam, bindingResult);
 
         currentUser.update(
                 updateUserParam.getEmail(),
@@ -92,18 +99,11 @@ public class CurrentUserApi {
         return ResponseEntity.ok(userResponse(userData));
     }
 
-    private void checkUniquenessOfUsernameAndEmail(User currentUser, UpdateUserParam updateUserParam, BindingResult bindingResult) {
+    private void checkUniquenessOfUsername(User currentUser, UpdateUserParam updateUserParam, BindingResult bindingResult) {
         if (!"".equals(updateUserParam.getUsername())) {
             Optional<User> byUsername = userRepository.findByUsername(updateUserParam.getUsername());
             if (byUsername.isPresent() && !byUsername.get().equals(currentUser)) {
                 bindingResult.rejectValue("username", "DUPLICATED", "username already exist");
-            }
-        }
-
-        if (!"".equals(updateUserParam.getEmail())) {
-            Optional<User> byEmail = userRepository.findByEmail(updateUserParam.getEmail());
-            if (byEmail.isPresent() && !byEmail.get().equals(currentUser)) {
-                bindingResult.rejectValue("email", "DUPLICATED", "email already exist");
             }
         }
 

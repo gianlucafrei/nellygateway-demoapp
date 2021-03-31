@@ -2,7 +2,7 @@ create table users (
   id varchar(255) primary key,
   username varchar(255) UNIQUE,
   loginProvider varchar(255),
-  email varchar(255) UNIQUE,
+  email varchar(255),
   bio text,
   image varchar(511)
 );
