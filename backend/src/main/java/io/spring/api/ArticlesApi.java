@@ -2,6 +2,7 @@ package io.spring.api;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
+import io.spring.api.security.JwtWithUser;
 import io.spring.application.Page;
 import io.spring.application.ArticleQueryService;
 import io.spring.core.article.Article;
@@ -39,7 +40,7 @@ public class ArticlesApi {
     @PostMapping
     public ResponseEntity createArticle(@Valid @RequestBody NewArticleParam newArticleParam,
                                         BindingResult bindingResult,
-                                        @AuthenticationPrincipal User user) {
+                                        @AuthenticationPrincipal JwtWithUser principal) {
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
         }
@@ -54,18 +55,18 @@ public class ArticlesApi {
             newArticleParam.getDescription(),
             newArticleParam.getBody(),
             newArticleParam.getTagList(),
-            user.getId());
+                principal.getCurrentUser().getId());
         articleRepository.save(article);
         return ResponseEntity.ok(new HashMap<String, Object>() {{
-            put("article", articleQueryService.findById(article.getId(), user).get());
+            put("article", articleQueryService.findById(article.getId(), principal.getCurrentUser()).get());
         }});
     }
 
     @GetMapping(path = "feed")
     public ResponseEntity getFeed(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                   @RequestParam(value = "limit", defaultValue = "20") int limit,
-                                  @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(articleQueryService.findUserFeed(user, new Page(offset, limit)));
+                                  @AuthenticationPrincipal JwtWithUser principal) {
+        return ResponseEntity.ok(articleQueryService.findUserFeed(principal.getCurrentUser(), new Page(offset, limit)));
     }
 
     @GetMapping
@@ -74,8 +75,8 @@ public class ArticlesApi {
                                       @RequestParam(value = "tag", required = false) String tag,
                                       @RequestParam(value = "favorited", required = false) String favoritedBy,
                                       @RequestParam(value = "author", required = false) String author,
-                                      @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(articleQueryService.findRecentArticles(tag, author, favoritedBy, new Page(offset, limit), user));
+                                      @AuthenticationPrincipal JwtWithUser principal) {
+        return ResponseEntity.ok(articleQueryService.findRecentArticles(tag, author, favoritedBy, new Page(offset, limit), principal.getCurrentUser()));
     }
 }
 

@@ -67,11 +67,10 @@ securityProfiles:
           secretKey: deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
           keyId: Sample Key
         mappings:
-          provider:       <session.provider>
-          email_verified: <mappings.email_verified>
+          sub:            <session.provider>:<session.userId>
+          picture:        <mappings.picture>
           email:          <mappings.email>
           proxy:          "OWASP Application Gateway"
-          picture:        <mappings.picture>
           sessionId:      <session.id>
 
 traceProfile:

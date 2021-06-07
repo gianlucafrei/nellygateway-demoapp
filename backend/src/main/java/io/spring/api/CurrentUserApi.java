@@ -17,7 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,47 +39,40 @@ import java.util.Optional;
 public class CurrentUserApi {
     private UserQueryService userQueryService;
     private UserRepository userRepository;
-    private JwtTokenFilter tokenFilter;
     private String defaultImage;
 
     @Autowired
-    public CurrentUserApi(UserQueryService userQueryService, UserRepository userRepository, JwtTokenFilter tokenFilter, @Value("${image.default}") String defaultImage) {
+    public CurrentUserApi(UserQueryService userQueryService, UserRepository userRepository, @Value("${image.default}") String defaultImage) {
         this.userQueryService = userQueryService;
         this.userRepository = userRepository;
-        this.tokenFilter = tokenFilter;
         this.defaultImage = defaultImage;
     }
 
     @GetMapping
-    public ResponseEntity currentUser(@AuthenticationPrincipal User currentUser, HttpServletRequest request) {
+    public ResponseEntity currentUser(@AuthenticationPrincipal Jwt jwt, HttpServletRequest request) {
 
-        Optional<Claims> claimsOptional = tokenFilter.getValidatedClaimsFromRequest(request);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if(!claimsOptional.isPresent())
+        if(auth == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
-        if(currentUser == null) {
-
-            String email = claimsOptional.get().get("email", String.class);
-            String pictureFromClaims = claimsOptional.get().get("picture", String.class);
-
-            final String picture;
-
-            if(pictureFromClaims == null || "".equals(pictureFromClaims))
-                picture = defaultImage;
-            else
-                picture = pictureFromClaims;
-
+        if(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("NOT-REGISTERED")))
+        {
             return ResponseEntity.ok(new HashMap<String, Object>() {{
-                put("email", email);
+
+                String picture = jwt.getClaim("picture");
+                if(picture == null || "".equals(picture))
+                    picture = defaultImage;
+
+                put("email", jwt.getClaim("email"));
                 put("needsRegistration", true);
                 put("picture", picture);
             }});
+        }else {
+
+            UserData userData = userQueryService.findById(auth.getName()).get();
+            return ResponseEntity.ok(userResponse(userData));
         }
-
-
-        UserData userData = userQueryService.findById(currentUser.getId()).get();
-        return ResponseEntity.ok(userResponse(userData));
     }
 
     @PutMapping

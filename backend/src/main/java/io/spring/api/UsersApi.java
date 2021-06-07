@@ -18,6 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,27 +45,22 @@ public class UsersApi {
     @Autowired
     public UsersApi(UserRepository userRepository,
                     UserQueryService userQueryService,
-                    @Value("${image.default}") String defaultImage,
-                    JwtTokenFilter tokenFilter) {
+                    @Value("${image.default}") String defaultImage) {
         this.userRepository = userRepository;
         this.userQueryService = userQueryService;
         this.defaultImage = defaultImage;
-        this.tokenFilter = tokenFilter;
     }
 
     @RequestMapping(path = "/users", method = POST)
-    public ResponseEntity createUser(@Valid @RequestBody RegisterParam registerParam, BindingResult bindingResult, HttpServletRequest request) {
-        Optional<Claims> validatedClaimsFromRequest = tokenFilter.getValidatedClaimsFromRequest(request);
+    public ResponseEntity createUser(@Valid @RequestBody RegisterParam registerParam,
+                                     BindingResult bindingResult,
+                                     @AuthenticationPrincipal Jwt jwt,
+                                     HttpServletRequest request) {
 
-        if(!validatedClaimsFromRequest.isPresent())
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-
-        Claims claims = validatedClaimsFromRequest.get();
-
-        String id = claims.getSubject();
-        String email = claims.get("email", String.class);
-        String picture = claims.get("picture", String.class);
-        String issuer = claims.getIssuer();
+        String id = jwt.getSubject();
+        String email = jwt.getClaim("email");
+        String picture = jwt.getClaim("picture");
+        String issuer = jwt.getClaim("provider");
 
         if(picture == null || "".equals(picture))
             picture = defaultImage;

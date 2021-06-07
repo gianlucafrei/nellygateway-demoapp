@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
 import io.spring.api.exception.NoAuthorizationException;
 import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.api.security.JwtWithUser;
 import io.spring.core.service.AuthorizationService;
 import io.spring.application.data.CommentData;
 import io.spring.application.CommentQueryService;
@@ -50,23 +51,23 @@ public class CommentsApi {
 
     @PostMapping
     public ResponseEntity<?> createComment(@PathVariable("slug") String slug,
-                                                     @AuthenticationPrincipal User user,
+                                                     @AuthenticationPrincipal JwtWithUser principal,
                                                      @Valid @RequestBody NewCommentParam newCommentParam,
                                                      BindingResult bindingResult) {
         Article article = findArticle(slug);
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
         }
-        Comment comment = new Comment(newCommentParam.getBody(), user.getId(), article.getId());
+        Comment comment = new Comment(newCommentParam.getBody(), principal.getCurrentUser().getId(), article.getId());
         commentRepository.save(comment);
-        return ResponseEntity.status(201).body(commentResponse(commentQueryService.findById(comment.getId(), user).get()));
+        return ResponseEntity.status(201).body(commentResponse(commentQueryService.findById(comment.getId(), principal.getCurrentUser()).get()));
     }
 
     @GetMapping
     public ResponseEntity getComments(@PathVariable("slug") String slug,
-                                      @AuthenticationPrincipal User user) {
+                                      @AuthenticationPrincipal JwtWithUser principal) {
         Article article = findArticle(slug);
-        List<CommentData> comments = commentQueryService.findByArticleId(article.getId(), user);
+        List<CommentData> comments = commentQueryService.findByArticleId(article.getId(), principal.getCurrentUser());
         return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("comments", comments);
         }});
@@ -75,10 +76,10 @@ public class CommentsApi {
     @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteComment(@PathVariable("slug") String slug,
                                         @PathVariable("id") String commentId,
-                                        @AuthenticationPrincipal User user) {
+                                        @AuthenticationPrincipal JwtWithUser principal) {
         Article article = findArticle(slug);
         return commentRepository.findById(article.getId(), commentId).map(comment -> {
-            if (!AuthorizationService.canWriteComment(user, article, comment)) {
+            if (!AuthorizationService.canWriteComment(principal.getCurrentUser(), article, comment)) {
                 throw new NoAuthorizationException();
             }
             commentRepository.remove(comment);

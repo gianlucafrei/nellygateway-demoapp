@@ -3,6 +3,7 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.NoAuthorizationException;
 import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.api.security.JwtWithUser;
 import io.spring.core.service.AuthorizationService;
 import io.spring.application.data.ArticleData;
 import io.spring.application.ArticleQueryService;
@@ -39,18 +40,18 @@ public class ArticleApi {
 
     @GetMapping
     public ResponseEntity<?> article(@PathVariable("slug") String slug,
-                                     @AuthenticationPrincipal User user) {
-        return articleQueryService.findBySlug(slug, user)
+                                     @AuthenticationPrincipal JwtWithUser principal) {
+        return articleQueryService.findBySlug(slug, principal.getCurrentUser())
             .map(articleData -> ResponseEntity.ok(articleResponse(articleData)))
             .orElseThrow(ResourceNotFoundException::new);
     }
 
     @PutMapping
     public ResponseEntity<?> updateArticle(@PathVariable("slug") String slug,
-                                           @AuthenticationPrincipal User user,
+                                           @AuthenticationPrincipal JwtWithUser principal,
                                            @Valid @RequestBody UpdateArticleParam updateArticleParam) {
         return articleRepository.findBySlug(slug).map(article -> {
-            if (!AuthorizationService.canWriteArticle(user, article)) {
+            if (!AuthorizationService.canWriteArticle(principal.getCurrentUser(), article)) {
                 throw new NoAuthorizationException();
             }
             article.update(
@@ -58,15 +59,15 @@ public class ArticleApi {
                 updateArticleParam.getDescription(),
                 updateArticleParam.getBody());
             articleRepository.save(article);
-            return ResponseEntity.ok(articleResponse(articleQueryService.findBySlug(slug, user).get()));
+            return ResponseEntity.ok(articleResponse(articleQueryService.findBySlug(slug, principal.getCurrentUser()).get()));
         }).orElseThrow(ResourceNotFoundException::new);
     }
 
     @DeleteMapping
     public ResponseEntity deleteArticle(@PathVariable("slug") String slug,
-                                        @AuthenticationPrincipal User user) {
+                                        @AuthenticationPrincipal JwtWithUser principal) {
         return articleRepository.findBySlug(slug).map(article -> {
-            if (!AuthorizationService.canWriteArticle(user, article)) {
+            if (!AuthorizationService.canWriteArticle(principal.getCurrentUser(), article)) {
                 throw new NoAuthorizationException();
             }
             articleRepository.remove(article);

@@ -1,6 +1,7 @@
 package io.spring.api;
 
 import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.api.security.JwtWithUser;
 import io.spring.application.data.ArticleData;
 import io.spring.application.ArticleQueryService;
 import io.spring.core.article.Article;
@@ -37,21 +38,21 @@ public class ArticleFavoriteApi {
 
     @PostMapping
     public ResponseEntity favoriteArticle(@PathVariable("slug") String slug,
-                                          @AuthenticationPrincipal User user) {
+                                          @AuthenticationPrincipal JwtWithUser principal) {
         Article article = getArticle(slug);
-        ArticleFavorite articleFavorite = new ArticleFavorite(article.getId(), user.getId());
+        ArticleFavorite articleFavorite = new ArticleFavorite(article.getId(), principal.getCurrentUser().getId());
         articleFavoriteRepository.save(articleFavorite);
-        return responseArticleData(articleQueryService.findBySlug(slug, user).get());
+        return responseArticleData(articleQueryService.findBySlug(slug, principal.getCurrentUser()).get());
     }
 
     @DeleteMapping
     public ResponseEntity unfavoriteArticle(@PathVariable("slug") String slug,
-                                            @AuthenticationPrincipal User user) {
+                                            @AuthenticationPrincipal JwtWithUser principal) {
         Article article = getArticle(slug);
-        articleFavoriteRepository.find(article.getId(), user.getId()).ifPresent(favorite -> {
+        articleFavoriteRepository.find(article.getId(), principal.getCurrentUser().getId()).ifPresent(favorite -> {
             articleFavoriteRepository.remove(favorite);
         });
-        return responseArticleData(articleQueryService.findBySlug(slug, user).get());
+        return responseArticleData(articleQueryService.findBySlug(slug, principal.getCurrentUser()).get());
     }
 
     private ResponseEntity<HashMap<String, Object>> responseArticleData(final ArticleData articleData) {

@@ -1,0 +1,99 @@
+{
+  "id": "41eb007e-b2f0-4c7f-ae65-a21d89ac061a",
+  "version": "2.0",
+  "name": "Nellygateway-demo",
+  "url": "https://nellygateway.azurewebsites.net",
+  "tests": [{
+    "id": "f399379a-5c43-4606-b3e1-4b9e4889a2c1",
+    "name": "Login",
+    "commands": [{
+      "id": "36d4a895-a898-4dff-8942-00b4f6ab58a5",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a06aff1b-1d8d-43a6-8194-e40e51f2e3c7",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Sign up",
+      "targets": [
+        ["linkText=Sign up", "linkText"],
+        ["css=.navbar-nav > .nav-item:nth-child(3) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'Sign up')]", "xpath:link"],
+        ["xpath=//a[contains(@href, '/signup')]", "xpath:href"],
+        ["xpath=//li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Sign up')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "4bf1819c-c3eb-4566-a9dc-b46123d656a0",
+      "comment": "",
+      "command": "click",
+      "target": "css=.login-button:nth-child(1)",
+      "targets": [
+        ["css=.login-button:nth-child(1)", "css:finder"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'SignUp with Username & Password (Auth0)')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e2b7ce32-06d8-46a1-ad7d-cc0d0dcf5c4f",
+      "comment": "",
+      "command": "type",
+      "target": "id=username",
+      "targets": [
+        ["id=username", "id"],
+        ["name=username", "name"],
+        ["css=#username", "css:finder"],
+        ["xpath=//input[@id='username']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "test@test.ch"
+    }, {
+      "id": "15280285-317b-4272-bba3-21bc21126c09",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "TestTest1."
+    }, {
+      "id": "b2d5bf83-fae7-47e5-b952-a74d9d5ba82c",
+      "comment": "",
+      "command": "click",
+      "target": "name=action",
+      "targets": [
+        ["name=action", "name"],
+        ["css=.c2d4277da", "css:finder"],
+        ["xpath=//button[@name='action']", "xpath:attributes"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Continue')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "29e1b00b-ccff-4eca-8da1-5b40ccdf87f1",
+      "comment": "",
+      "command": "open",
+      "target": "/auth/session",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "02674751-7bb7-41f1-8d4e-dc78d7441a35",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": []
+  }],
+  "urls": ["https://nellygateway.azurewebsites.net/"],
+  "plugins": []
+}

@@ -1,5 +1,7 @@
 package io.spring.api.security;
 
+import io.spring.core.user.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -24,13 +29,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${spring.h2.console.enabled:false}")
     private boolean h2ConsoleEnabled;
 
-    @Bean
-    public JwtTokenFilter jwtTokenFilter() {
-        return new JwtTokenFilter();
-    }
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkUlr;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        // JWT authentication
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkUlr).build();
+        jwtDecoder.setClaimSetConverter(new CustomClaimsDecoder());
+        http.oauth2ResourceServer().jwt().decoder(jwtDecoder);
+
+        http.addFilterAfter(new RegisteredUserFilter(userRepository), BearerTokenAuthenticationFilter.class);
+
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .antMatchers(HttpMethod.GET, "/articles/feed").hasAuthority("REGISTERED")
+                .antMatchers(HttpMethod.POST, "/users").hasAuthority("NOT-REGISTERED")
+                .antMatchers(HttpMethod.GET, "/articles/**", "/profiles/**", "/user", "/tags").permitAll()
+                .anyRequest().authenticated();
 
         if (h2ConsoleEnabled)
             http.authorizeRequests()
@@ -39,19 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().sameOrigin();
 
         http.csrf().disable()
-            .cors()
-            .and()
             .exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS).permitAll()
-            .antMatchers(HttpMethod.GET, "/articles/feed").authenticated()
-            .antMatchers(HttpMethod.POST, "/users", "/users/login").permitAll()
-            .antMatchers(HttpMethod.GET, "/articles/**", "/profiles/**", "/tags", "/user").permitAll()
-            .anyRequest().authenticated();
-
-        http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Bean
