@@ -62,10 +62,8 @@ securityProfiles:
         audience: "<<route-url>>"
         issuer: "<<hostUri>>"
         tokenLifetimeSeconds: 30
-        signatureImplementation: "hmac"
-        signatureSettings:
-          secretKey: deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
-          keyId: Sample Key
+        signatureImplementation: "rsa"
+        signatureSettings: {}
         mappings:
           sub:            <session.provider>:<session.userId>
           picture:        <mappings.picture>
