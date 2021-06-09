@@ -3,7 +3,6 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.jsonwebtoken.Claims;
 import io.spring.api.exception.InvalidRequestException;
-import io.spring.api.security.JwtTokenFilter;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
 import io.spring.core.user.User;
@@ -53,7 +52,7 @@ public class CurrentUserApi {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if(auth == null)
+        if(jwt == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
         if(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("NOT-REGISTERED")))

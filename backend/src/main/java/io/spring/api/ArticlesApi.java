@@ -66,7 +66,8 @@ public class ArticlesApi {
     public ResponseEntity getFeed(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                   @RequestParam(value = "limit", defaultValue = "20") int limit,
                                   @AuthenticationPrincipal JwtWithUser principal) {
-        return ResponseEntity.ok(articleQueryService.findUserFeed(principal.getCurrentUser(), new Page(offset, limit)));
+        User user = principal.getCurrentUser() == null ? null : principal.getCurrentUser();
+        return ResponseEntity.ok(articleQueryService.findUserFeed(user, new Page(offset, limit)));
     }
 
     @GetMapping
@@ -76,7 +77,8 @@ public class ArticlesApi {
                                       @RequestParam(value = "favorited", required = false) String favoritedBy,
                                       @RequestParam(value = "author", required = false) String author,
                                       @AuthenticationPrincipal JwtWithUser principal) {
-        return ResponseEntity.ok(articleQueryService.findRecentArticles(tag, author, favoritedBy, new Page(offset, limit), principal.getCurrentUser()));
+        User user = principal == null ? null : principal.getCurrentUser();
+        return ResponseEntity.ok(articleQueryService.findRecentArticles(tag, author, favoritedBy, new Page(offset, limit), user));
     }
 }
 

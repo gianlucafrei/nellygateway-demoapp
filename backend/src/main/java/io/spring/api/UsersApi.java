@@ -3,7 +3,6 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.jsonwebtoken.Claims;
 import io.spring.api.exception.InvalidRequestException;
-import io.spring.api.security.JwtTokenFilter;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
 import io.spring.core.user.EncryptService;
@@ -40,7 +39,6 @@ public class UsersApi {
     private UserRepository userRepository;
     private UserQueryService userQueryService;
     private String defaultImage;
-    private JwtTokenFilter tokenFilter;
 
     @Autowired
     public UsersApi(UserRepository userRepository,

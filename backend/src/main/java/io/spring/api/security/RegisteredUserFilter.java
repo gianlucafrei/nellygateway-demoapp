@@ -20,22 +20,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@Component
 public class RegisteredUserFilter implements Filter {
-
-    private static final Logger log = LoggerFactory.getLogger(RegisteredUserFilter.class);
 
     public RegisteredUserFilter(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-
     private UserRepository userRepository;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
